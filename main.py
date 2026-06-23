@@ -5,7 +5,7 @@ import os
 import smtplib
 import base64
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Header
 from pydantic import BaseModel
 from typing import List
 
@@ -18,6 +18,7 @@ app = FastAPI()
 
 GMAIL = os.getenv("GMAIL")
 APP_PASSWORD = os.getenv("APP_PASSWORD")
+API_KEY = os.getenv("API_KEY")
 
 
 class Sender(BaseModel):
@@ -45,11 +46,28 @@ class EmailRequest(BaseModel):
 
 @app.get("/")
 def home():
-    return {"status": "Email API Running"}
+    return {
+        "status": "Email API Running"
+    }
+
+@app.get("/about")
+def about():
+    return {
+        "Description" : "Email API For Get My Certificate developed by ACM"
+    }
 
 
 @app.post("/send-email")
-def send_email(data: EmailRequest):
+def send_email(
+    data: EmailRequest,
+    x_api_key: str = Header(None)
+):
+    if x_api_key != API_KEY:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid API key"
+        )
+
     try:
         msg = MIMEMultipart()
 
@@ -114,3 +132,14 @@ def send_email(data: EmailRequest):
             status_code=500,
             detail=str(e)
         )
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(
+        "main:app",
+        host="0.0.0.0",
+        port=8000,
+        reload=True
+    )
