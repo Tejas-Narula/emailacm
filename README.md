@@ -133,6 +133,54 @@ POST /send-email
 }
 ```
 
+### Bulk Endpoint
+
+Use this endpoint to send individual certificate emails in one SMTP session:
+
+```http
+POST /send-bulk-email
+```
+
+```json
+{
+  "sender": {
+    "name": "ACM Student Chapter, MUJ",
+    "email": "sender@example.com"
+  },
+  "subject": "Your ACM Certificate - Workshop Name",
+  "htmlContent": "<p>Hi,</p><p>Your certificate is attached.</p>",
+  "attachment": [
+    {
+      "name": "certificate-template.png",
+      "content": "BASE64_ENCODED_FILE"
+    }
+  ],
+  "emails": [
+    {
+      "recipient": {
+        "email": "recipient1@example.com",
+        "name": "Recipient One"
+      }
+    },
+    {
+      "recipient": {
+        "email": "recipient2@example.com",
+        "name": "Recipient Two"
+      },
+      "subject": "Your Personalized ACM Certificate"
+    }
+  ]
+}
+```
+
+```json
+{
+  "success": true,
+  "message": "Bulk emails sent successfully",
+  "sentCount": 2
+}
+```
+
 ---
 
 ## Project Structure
