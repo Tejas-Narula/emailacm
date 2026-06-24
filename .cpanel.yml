@@ -1,0 +1,4 @@
+deployment:
+  tasks:
+    - export DEPLOYPATH=/home/mujhostingacm/emailACM
+    - /bin/cp -R . $DEPLOYPATH
